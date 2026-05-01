@@ -28,5 +28,5 @@ jobs:
 
     - name: Test with pytest
       run: |
-        # Мы указываем путь к папке с тестами
+        # Podajemy ścieżkę do folderu z testami
         pytest tests/
