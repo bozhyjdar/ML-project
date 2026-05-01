@@ -19,58 +19,58 @@ os.makedirs('plots', exist_ok=True)
 
 def run_experiments():
 
-    print("--- 1. Zbiór Subscribers ---")
+    print("SUBSCRIBERS")
     X_train, X_test, y_train, y_test = load_subscribers()
     
     nb = GaussianNB()
     nb.fit(X_train, y_train)
-    print("Naiwny Bayes Dokładność:", accuracy_score(y_test, nb.predict(X_test)))
+    print("naiwny bayes dokładność:", accuracy_score(y_test, nb.predict(X_test)))
     
     dt = DecisionTreeClassifier(max_depth=5)
     dt.fit(X_train, y_train)
-    print("Drzewo Decyzyjne Dokładność:", accuracy_score(y_test, dt.predict(X_test)))
+    print("drzewo decyzyjne dokładność:", accuracy_score(y_test, dt.predict(X_test)))
 
    
-    print("\n--- 2. Sieć MLP: Problem XOR ---")
+    print("\nXOR")
     X_xor, y_xor = load_xor()
     model_xor = build_xor_model()
     model_xor.compile(loss='binary_crossentropy', optimizer=Adam(learning_rate=0.1), metrics=['accuracy'])
     history_xor = model_xor.fit(X_xor, y_xor, epochs=200, verbose=0)
     
     plt.plot(history_xor.history['loss'])
-    plt.title('Błąd uczenia - Bramka XOR')
-    plt.xlabel('Epoka')
-    plt.ylabel('Loss (Strata)')
+    plt.title('błąd uczenia - Bramka XOR')
+    plt.xlabel('epoka')
+    plt.ylabel('loss (Strata)')
     plt.savefig('plots/xor_loss.png')
     plt.clf()
 
   
-    print("\n--- 3. Sieć MLP: Zbiór Titanic ---")
+    print("\nTITANIC")
     X_train_t, X_test_t, y_train_t, y_test_t = load_titanic()
     model_t = build_titanic_model()
     model_t.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     history_t = model_t.fit(X_train_t, y_train_t, epochs=50, validation_data=(X_test_t, y_test_t), verbose=0)
     
-    plt.plot(history_t.history['loss'], label='Strata Treningowa')
-    plt.plot(history_t.history['val_loss'], label='Strata Walidacyjna')
-    plt.title('Błąd uczenia - Titanic')
-    plt.xlabel('Epoka')
-    plt.ylabel('Loss (Strata)')
+    plt.plot(history_t.history['loss'], label='strata treningowa')
+    plt.plot(history_t.history['val_loss'], label='strata walidacyjna')
+    plt.title('błąd uczenia - Titanic')
+    plt.xlabel('epoka')
+    plt.ylabel('loss (Strata)')
     plt.legend()
     plt.savefig('plots/titanic_loss.png')
     plt.clf()
-    print("Dokładność Titanic (Zbiór testowy):", model_t.evaluate(X_test_t, y_test_t, verbose=0)[1])
+    print("dokładność Titanic (Zbiór testowy):", model_t.evaluate(X_test_t, y_test_t, verbose=0)[1])
 
 
-    print("\n--- 4. Sieć CNN: Zbiór MNIST ---")
+    print("\nMNIST")
     (x_train_m, y_train_m), (x_test_m, y_test_m) = load_mnist()
     model_cnn = build_mnist_cnn()
     model_cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model_cnn.fit(x_train_m, y_train_m, epochs=3, validation_data=(x_test_m, y_test_m))
-    print("Dokładność MNIST (Zbiór testowy):", model_cnn.evaluate(x_test_m, y_test_m, verbose=0)[1])
+    print("dokładność MNIST (Zbiór testowy):", model_cnn.evaluate(x_test_m, y_test_m, verbose=0)[1])
 
    
-    print("\n--- 5. Wymagania na ocenę 5.0 (Breast Cancer Wisconsin) ---")
+    print("\nADAM vs MOMENTUM")
     X_c, y_c, X_train_c, X_test_c, y_train_c, y_test_c = load_breast_cancer_data()
     
    
@@ -78,12 +78,12 @@ def run_experiments():
     sns.pairplot(pd.concat([X_c[subset], pd.Series(y_c, name='target')], axis=1), hue='target')
     plt.savefig('plots/eda_cancer.png')
     plt.clf()
-    print("Zapisano wykresy EDA.")
+    print("zapisano wykresy EDA.")
 
 
     dt_cancer = DecisionTreeClassifier(max_depth=4)
     dt_cancer.fit(X_train_c, y_train_c)
-    print("Dokładność Drzewa (Breast Cancer):", accuracy_score(y_test_c, dt_cancer.predict(X_test_c)))
+    print("dokładność drzewa (ADAM vs MOMENTUM):", accuracy_score(y_test_c, dt_cancer.predict(X_test_c)))
 
     
     input_dim = X_train_c.shape[1]
@@ -101,14 +101,14 @@ def run_experiments():
    
     plt.plot(hist_mom.history['val_loss'], label='SGD + Momentum (Walidacja)')
     plt.plot(hist_adam.history['val_loss'], label='Adam (Walidacja)')
-    plt.title('Porównanie metod uczenia - Breast Cancer')
-    plt.xlabel('Epoka')
-    plt.ylabel('Loss (Strata)')
+    plt.title('porównanie metod uczenia - Breast Cancer')
+    plt.xlabel('epoka')
+    plt.ylabel('loss (Strata)')
     plt.legend()
     plt.savefig('plots/advanced_learning.png')
     plt.clf()
     
-    print("\nKoniec eksperymentów! Wszystkie wykresy zapisano w folderze 'plots/'.")
+    print("\nkoniec, wykresy zapisano w folderze 'plots/'")
 
 if __name__ == "__main__":
     run_experiments()
